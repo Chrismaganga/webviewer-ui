@@ -71,10 +71,11 @@ import {
   defaultOfficeEditorModularHeaders,
   defaultOfficeEditorPanels,
 } from '../../redux/officeEditorModularComponents';
-import { defaultSheetsEditorHeaders,
+import {
+  defaultSheetsEditorHeaders,
   defaultSheetsEditorComponents,
   defaultSheetsEditorPanels,
-  defaultSheetFlyoutMap
+  defaultSheetFlyoutMap,
 } from '../../redux/sheetsEditorComponents';
 
 import setLanguage from 'src/apis/setLanguage';
@@ -129,27 +130,33 @@ const App = ({ removeEventHandlers }) => {
     const isOfficeEditingEnabled = getHashParameters('enableOfficeEditing', false);
     const sheetsEditorBetaEnabled = getHashParameters('sheetsEditorBeta', false);
     if (isOfficeEditingEnabled && isMobileDevice) {
-      dispatch(actions.showWarningMessage({
-        message: 'officeEditor.notSupportedOnMobile',
-      }));
+      dispatch(
+        actions.showWarningMessage({
+          message: 'officeEditor.notSupportedOnMobile',
+        }),
+      );
     }
     if (isOfficeEditingEnabled) {
-    // If a UIConfig was passed it means we wanted to modify the UI so we won't load the default
+      // If a UIConfig was passed it means we wanted to modify the UI so we won't load the default
       if (!uiConfigPath) {
         if (sheetsEditorBetaEnabled) {
-        // set Beat UI for Sheets Office Editor
+          // set Beat UI for Sheets Office Editor
           dispatch(actions.setModularHeadersAndComponents(defaultSheetsEditorHeaders, defaultSheetsEditorComponents));
           dispatch(actions.setGenericPanels(defaultSheetsEditorPanels));
-          Object.values(defaultSheetFlyoutMap).forEach((flyout) => {
+          Object.values(defaultSheetFlyoutMap).forEach(flyout => {
             dispatch(actions.addFlyout(flyout));
           });
           dispatch(actions.setIsSheetEditorMode(true));
         } else {
           // set default UI for DOCX Office Editor
-          dispatch(actions.setModularHeadersAndComponents(defaultOfficeEditorModularHeaders, defaultOfficeEditorModularComponents));
+          dispatch(
+            actions.setModularHeadersAndComponents(
+              defaultOfficeEditorModularHeaders,
+              defaultOfficeEditorModularComponents,
+            ),
+          );
           dispatch(actions.setGenericPanels(defaultOfficeEditorPanels));
         }
-
       }
       dispatch(actions.setIsOfficeEditorHeaderEnabled(true));
     }
@@ -160,12 +167,12 @@ const App = ({ removeEventHandlers }) => {
     const isOfficeEditingEnabled = getHashParameters('enableOfficeEditing', false);
     if (customizableUI) {
       // These elements are disabled in the old UI and need to be enabled in the new UI
-      dispatch(actions.enableElements([
-        'layersPanel',
-        'layersPanelButton',
-        'bookmarksPanel',
-        'bookmarksPanelButton',
-      ], PRIORITY_ONE));
+      dispatch(
+        actions.enableElements(
+          ['layersPanel', 'layersPanelButton', 'bookmarksPanel', 'bookmarksPanelButton'],
+          PRIORITY_ONE,
+        ),
+      );
       // set panel width for notes panel to 330px for the new UI
       dispatch(actions.setPanelWidth(DataElements.NOTES_PANEL, 330));
       // set panel width for search panel to 330px for the new UI
@@ -192,15 +199,15 @@ const App = ({ removeEventHandlers }) => {
     setTimeout(() => {
       fireEvent(Events.VIEWER_LOADED);
     }, 300);
-    window.isApryseWebViewerWebComponent ?
-      fireEvent('ready', undefined, getInstanceNode()) :
-      window.parent.postMessage(
-        {
-          type: 'viewerLoaded',
-          id: parseInt(getHashParameters('id'), 10),
-        },
-        '*',
-      );
+    window.isApryseWebViewerWebComponent
+      ? fireEvent('ready', undefined, getInstanceNode())
+      : window.parent.postMessage(
+          {
+            type: 'viewerLoaded',
+            id: parseInt(getHashParameters('id'), 10),
+          },
+          '*',
+        );
 
     async function loadInitialDocument() {
       let initialDoc = getHashParameters('d', '');
@@ -310,7 +317,7 @@ const App = ({ removeEventHandlers }) => {
   }, []);
 
   useEffect(() => {
-    const onError = (error) => {
+    const onError = error => {
       let errorTitle;
       if (error.type && error.type === 'loaderror') {
         errorTitle = 'message.loadError';
@@ -342,10 +349,10 @@ const App = ({ removeEventHandlers }) => {
   useEffect(() => {
     // update cursor and selection properties for Office Editor custom UI
     if (isOfficeEditorMode && customizableUI) {
-      const onCursorPropertiesUpdated = async (cursorProperties) => {
+      const onCursorPropertiesUpdated = async cursorProperties => {
         dispatch(actions.setOfficeEditorCursorProperties(cursorProperties));
       };
-      const onSelectionPropertiesUpdated = (selectionProperties) => {
+      const onSelectionPropertiesUpdated = selectionProperties => {
         dispatch(actions.setOfficeEditorSelectionProperties(selectionProperties));
       };
 
@@ -376,19 +383,38 @@ const App = ({ removeEventHandlers }) => {
       case panelNames.TEXT_EDITING:
         return <TextEditingPanel dataElement={dataElement} />;
       case panelNames.CHANGE_LIST:
-        return <MultiViewerWrapper><ComparePanel dataElement={dataElement} /></MultiViewerWrapper>;
+        return (
+          <MultiViewerWrapper>
+            <ComparePanel dataElement={dataElement} />
+          </MultiViewerWrapper>
+        );
       case panelNames.STYLE:
         return <LazyLoadWrapper Component={LazyLoadComponents.StylePanel} dataElement={dataElement} />;
       case panelNames.REDACTION:
-        return <LazyLoadWrapper Component={LazyLoadComponents.RedactionPanel} dataElement={dataElement} redactionAnnotationsList={redactionAnnotationsList} isCustomPanel={true} />;
+        return (
+          <LazyLoadWrapper
+            Component={LazyLoadComponents.RedactionPanel}
+            dataElement={dataElement}
+            redactionAnnotationsList={redactionAnnotationsList}
+            isCustomPanel={true}
+          />
+        );
       case panelNames.SEARCH:
         return <LazyLoadWrapper Component={LazyLoadComponents.SearchPanel} dataElement={dataElement} />;
       case panelNames.NOTES:
-        return <LazyLoadWrapper Component={LazyLoadComponents.NotesPanel} dataElement={dataElement} isCustomPanel={true} />;
+        return (
+          <LazyLoadWrapper Component={LazyLoadComponents.NotesPanel} dataElement={dataElement} isCustomPanel={true} />
+        );
       case panelNames.INDEX:
         return <LazyLoadWrapper Component={LazyLoadComponents.IndexPanel} dataElement={dataElement} />;
       case panelNames.TABS:
-        return <LazyLoadWrapper Component={LazyLoadComponents.TabPanel} dataElement={dataElement} redactionAnnotationsList={redactionAnnotationsList} />;
+        return (
+          <LazyLoadWrapper
+            Component={LazyLoadComponents.TabPanel}
+            dataElement={dataElement}
+            redactionAnnotationsList={redactionAnnotationsList}
+          />
+        );
       case panelNames.SIGNATURE_LIST:
         return <LazyLoadWrapper Component={LazyLoadComponents.SignatureListPanel} dataElement={dataElement} />;
       case panelNames.RUBBER_STAMP:
@@ -396,7 +422,13 @@ const App = ({ removeEventHandlers }) => {
       case panelNames.PORTFOLIO:
         return <LazyLoadWrapper Component={LazyLoadComponents.PortfolioPanel} dataElement={dataElement} />;
       case panelNames.FORM_FIELD:
-        return <LazyLoadWrapper Component={LazyLoadComponents.FormFieldPanel} dataElement={dataElement} annotation={widgetAnnotationAddedOrSelected} />;
+        return (
+          <LazyLoadWrapper
+            Component={LazyLoadComponents.FormFieldPanel}
+            dataElement={dataElement}
+            annotation={widgetAnnotationAddedOrSelected}
+          />
+        );
     }
   };
 
@@ -404,7 +436,9 @@ const App = ({ removeEventHandlers }) => {
     return (
       panel.render && (
         <Panel key={index} dataElement={panel.dataElement} location={panel.location} isCustom={true}>
-          {Object.values(panelNames).includes(panel.render) ? renderPanel(panel.render, panel.dataElement) : (
+          {Object.values(panelNames).includes(panel.render) ? (
+            renderPanel(panel.render, panel.dataElement)
+          ) : (
             <CustomElement
               key={panel.dataElement || index}
               className={`Panel ${panel.dataElement}`}
@@ -444,51 +478,66 @@ const App = ({ removeEventHandlers }) => {
         <TopHeader />
         <div className="content">
           <LeftHeader />
-          {!customizableUI && <LazyLoadWrapper
-            Component={LazyLoadComponents.LeftPanel}
-            dataElement={DataElements.LEFT_PANEL}
-          />}
+          {!customizableUI && (
+            <LazyLoadWrapper Component={LazyLoadComponents.LeftPanel} dataElement={DataElements.LEFT_PANEL} />
+          )}
           {(customizableUI || !isOfficeEditorMode) && panels}
           {window?.ResizeObserver && <MultiViewer />}
-          {!customizableUI && <RightPanel dataElement={DataElements.SEARCH_PANEL} onResize={(width) => dispatch(actions.setSearchPanelWidth(width))}>
-            <LazyLoadWrapper
-              Component={LazyLoadComponents.SearchPanel}
+          {!customizableUI && (
+            <RightPanel
               dataElement={DataElements.SEARCH_PANEL}
-            />
-          </RightPanel>}
-          {!customizableUI && <RightPanel dataElement={DataElements.NOTES_PANEL} onResize={(width) => dispatch(actions.setNotesPanelWidth(width))}>
-            {!notesInLeftPanel && <LazyLoadWrapper
-              Component={LazyLoadComponents.NotesPanel}
+              onResize={width => dispatch(actions.setSearchPanelWidth(width))}
+            >
+              <LazyLoadWrapper Component={LazyLoadComponents.SearchPanel} dataElement={DataElements.SEARCH_PANEL} />
+            </RightPanel>
+          )}
+          {!customizableUI && (
+            <RightPanel
               dataElement={DataElements.NOTES_PANEL}
-            />}
-          </RightPanel>}
-          {!customizableUI && <RightPanel dataElement="redactionPanel" onResize={(width) => dispatch(actions.setRedactionPanelWidth(width))}>
-            <LazyLoadWrapper
-              Component={LazyLoadComponents.RedactionPanel}
-              dataElement={DataElements.REDACTION_PANEL}
-              redactionAnnotationsList={redactionAnnotationsList} />
-          </RightPanel>}
-          <RightPanel dataElement="watermarkPanel" onResize={(width) => dispatch(actions.setWatermarkPanelWidth(width))}>
+              onResize={width => dispatch(actions.setNotesPanelWidth(width))}
+            >
+              {!notesInLeftPanel && (
+                <LazyLoadWrapper Component={LazyLoadComponents.NotesPanel} dataElement={DataElements.NOTES_PANEL} />
+              )}
+            </RightPanel>
+          )}
+          {!customizableUI && (
+            <RightPanel
+              dataElement="redactionPanel"
+              onResize={width => dispatch(actions.setRedactionPanelWidth(width))}
+            >
+              <LazyLoadWrapper
+                Component={LazyLoadComponents.RedactionPanel}
+                dataElement={DataElements.REDACTION_PANEL}
+                redactionAnnotationsList={redactionAnnotationsList}
+              />
+            </RightPanel>
+          )}
+          <RightPanel dataElement="watermarkPanel" onResize={width => dispatch(actions.setWatermarkPanelWidth(width))}>
             <WatermarkPanel />
           </RightPanel>
           <RightPanel
             dataElement="wv3dPropertiesPanel"
-            onResize={(width) => dispatch(actions.setWv3dPropertiesPanelWidth(width))}
+            onResize={width => dispatch(actions.setWv3dPropertiesPanelWidth(width))}
           >
             <Wv3dPropertiesPanel />
           </RightPanel>
           <MultiTabEmptyPage />
-          {!customizableUI && <RightPanel
-            dataElement="textEditingPanel"
-            onResize={(width) => dispatch(actions.setTextEditingPanelWidth(width))}
-          >
-            <TextEditingPanel />
-          </RightPanel>}
-          {!customizableUI && <MultiViewerWrapper>
-            <RightPanel dataElement="comparePanel" onResize={(width) => dispatch(actions.setComparePanelWidth(width))}>
-              <ComparePanel />
+          {!customizableUI && (
+            <RightPanel
+              dataElement="textEditingPanel"
+              onResize={width => dispatch(actions.setTextEditingPanelWidth(width))}
+            >
+              <TextEditingPanel />
             </RightPanel>
-          </MultiViewerWrapper>}
+          )}
+          {!customizableUI && (
+            <MultiViewerWrapper>
+              <RightPanel dataElement="comparePanel" onResize={width => dispatch(actions.setComparePanelWidth(width))}>
+                <ComparePanel />
+              </RightPanel>
+            </MultiViewerWrapper>
+          )}
           <RightHeader />
           <BottomHeader />
           {!isMultiViewerMode && <DocumentContainer />}
@@ -497,14 +546,8 @@ const App = ({ removeEventHandlers }) => {
           Component={LazyLoadComponents.ViewControlsOverlay}
           dataElement={DataElements.VIEW_CONTROLS_OVERLAY}
         />
-        <LazyLoadWrapper
-          Component={LazyLoadComponents.MenuOverlay}
-          dataElement={DataElements.MENU_OVERLAY}
-        />
-        <LazyLoadWrapper
-          Component={LazyLoadComponents.ZoomOverlay}
-          dataElement={DataElements.ZOOM_OVERLAY}
-        />
+        <LazyLoadWrapper Component={LazyLoadComponents.MenuOverlay} dataElement={DataElements.MENU_OVERLAY} />
+        <LazyLoadWrapper Component={LazyLoadComponents.ZoomOverlay} dataElement={DataElements.ZOOM_OVERLAY} />
         <LazyLoadWrapper
           Component={LazyLoadComponents.AnnotationContentOverlay}
           dataElement={DataElements.ANNOTATION_CONTENT_OVERLAY}
@@ -578,7 +621,10 @@ const App = ({ removeEventHandlers }) => {
           dataElement={DataElements.SCALE_MODAL}
           onOpenHook={useOnMeasurementToolOrAnnotationSelected}
         />
-        <LazyLoadWrapper Component={LazyLoadComponents.ContentEditLinkModal} dataElement={DataElements.CONTENT_EDIT_LINK_MODAL} />
+        <LazyLoadWrapper
+          Component={LazyLoadComponents.ContentEditLinkModal}
+          dataElement={DataElements.CONTENT_EDIT_LINK_MODAL}
+        />
         <LazyLoadWrapper Component={LazyLoadComponents.SignatureModal} dataElement={DataElements.SIGNATURE_MODAL} />
         <LazyLoadWrapper Component={LazyLoadComponents.PrintModal} dataElement={DataElements.PRINT_MODAL} />
         <LazyLoadWrapper Component={LazyLoadComponents.ErrorModal} dataElement={DataElements.ERROR_MODAL} />
@@ -607,15 +653,13 @@ const App = ({ removeEventHandlers }) => {
         <LazyLoadWrapper Component={LazyLoadComponents.InsertPageModal} dataElement={DataElements.INSERT_PAGE_MODAL} />
         <LazyLoadWrapper Component={LazyLoadComponents.LoadingModal} dataElement={DataElements.LOADING_MODAL} />
 
-        {
-          /*
+        {/*
             There were issues appearing in WebViewer BIM add-on with lazy loading ProgressModal.
             The BIM add-on relies on ProgressModal styling which wouldn't not get loaded explicitly.
             This caused styling issues when loading a 3D model and would impact the UI of the BIM add-on.
 
             See https://apryse.atlassian.net/browse/WVR-3094
-          */
-        }
+          */}
         <ProgressModal />
 
         <LazyLoadWrapper Component={LazyLoadComponents.WarningModal} dataElement={DataElements.WARNING_MODAL} />
@@ -635,7 +679,14 @@ const App = ({ removeEventHandlers }) => {
           />
         )}
         <LogoBar />
-        <LazyLoadWrapper Component={LazyLoadComponents.CreatePortfolioModal} dataElement={DataElements.CREATE_PORTFOLIO_MODAL} />
+        <LazyLoadWrapper
+          Component={LazyLoadComponents.CreatePortfolioModal}
+          dataElement={DataElements.CREATE_PORTFOLIO_MODAL}
+        />
+        <LazyLoadWrapper
+          Component={LazyLoadComponents.DynamicFormBuilder}
+          dataElement={DataElements.DYNAMIC_FORM_BUILDER}
+        />
         <EmbeddedJSPopup />
       </div>
 

@@ -102,6 +102,11 @@ function MenuOverlay() {
     dispatch(actions.openElement(DataElements.CREATE_PORTFOLIO_MODAL));
   };
 
+  const handleDynamicFormBuilderClick = () => {
+    closeMenuOverlay();
+    dispatch(actions.openElement(DataElements.DYNAMIC_FORM_BUILDER));
+  };
+
   const handleNewDocumentClick = async () => {
     closeMenuOverlay();
     loadDocument(dispatch, null, {
@@ -195,6 +200,15 @@ function MenuOverlay() {
           <div className="divider"></div>
         </>
       )}
+      <ActionButton
+        dataElement="dynamicFormBuilderButton"
+        className="row"
+        img="icon-form-field-edit"
+        label="Dynamic Form Builder"
+        ariaLabel="Dynamic Form Builder"
+        role="option"
+        onClick={handleDynamicFormBuilderClick}
+      />
       <ActionButton
         dataElement={DataElements.SETTINGS_BUTTON}
         className="row"

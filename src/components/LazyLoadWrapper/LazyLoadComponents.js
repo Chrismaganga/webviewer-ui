@@ -49,6 +49,7 @@ const OpenFileModal = lazy(() => import('components/OpenFileModal'));
 const SignatureValidationModal = lazy(() => import('components/SignatureValidationModal'));
 const CustomModal = lazy(() => import('components/CustomModal'));
 const CreatePortfolioModal = lazy(() => import('components/CreatePortfolioModal'));
+const DynamicFormBuilder = lazy(() => import('components/DynamicFormBuilder'));
 
 // Panels
 const OutlinesPanel = lazy(() => import('components/OutlinesPanel'));
@@ -133,6 +134,7 @@ const LazyLoadComponents = {
   SignatureListPanel,
   RubberStampPanel,
   FormFieldPanel,
+  DynamicFormBuilder,
 };
 
 export default LazyLoadComponents;
